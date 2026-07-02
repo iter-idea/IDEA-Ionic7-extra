@@ -60,7 +60,7 @@ import { IDEAAuthService } from './auth.service';
                 testId="resendlink.email"
                 type="email"
                 inputmode="email"
-                pattern="[A-Za-z0-9._%+-]{2,}@[a-zA-Z-_.]{2,}[.]{1}[a-zA-Z]{2,}"
+                pattern="[A-Za-z0-9._%+\\-]{2,}@[a-zA-Z\\-_.]{2,}[.]{1}[a-zA-Z]{2,}"
                 spellcheck="false"
                 autocorrect="off"
                 autocomplete="email"
