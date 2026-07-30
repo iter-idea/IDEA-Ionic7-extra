@@ -63,8 +63,10 @@ export class IDEAAppStatusService {
       return new AppStatus({
         version: this._env.idea.app.version,
         inMaintenance: statusFromS3.maintenance,
-        mustUpdate: statusFromS3.minVersion ? statusFromS3.minVersion > this._env.idea.app.version : false,
-        content: statusFromS3.messages[this._env.idea.app.version],
+        mustUpdate: statusFromS3.minVersion
+          ? compareVersions(statusFromS3.minVersion, this._env.idea.app.version) > 0
+          : false,
+        content: this.pickMessageLanguage(statusFromS3.messages?.[this._env.idea.app.version]),
         latestVersion: statusFromS3.latestVersion
       });
     } finally {
@@ -77,9 +79,27 @@ export class IDEAAppStatusService {
       });
     }
   }
+  /**
+   * The message of a version, in the user's language.
+   *
+   * A message has always been a single string, and it stays valid: the multi-language form is a map of language to
+   * message (`{ "en": "…", "it": "…" }`), resolved on the current language, then on the default one, and finally on
+   * whatever the file does carry — for an announcement, the wrong language is still better than silence.
+   */
+  private pickMessageLanguage(message: markdown | { [language: string]: markdown }): markdown {
+    if (!message || typeof message === 'string') return message as markdown;
+
+    return (
+      message[this._translate.getCurrentLang()] ??
+      message[this._translate.getDefaultLang()] ??
+      Object.values(message)[0] ??
+      ''
+    );
+  }
+
   private async presentToast(appStatus: AppStatus, options: { color?: string; position?: string } = {}): Promise<void> {
     let message = appStatus.content || '';
-    if (!message && this._env.idea.app.version < appStatus.latestVersion)
+    if (!message && compareVersions(this._env.idea.app.version, appStatus.latestVersion) < 0)
       message = this._translate._('IDEA_COMMON.APP_STATUS.NEW_VERSION', { newVersion: appStatus.latestVersion });
 
     if (!message) return;
@@ -99,6 +119,26 @@ export class IDEAAppStatusService {
   }
 }
 
+/**
+ * Compare two versions by their numeric parts: `4.10.0` is newer than `4.9.0`, which a plain string comparison
+ * gets backwards — and getting it backwards on `minVersion` means either locking out the app or failing to.
+ * Negative if `a` is older than `b`, zero if they match, positive if `a` is newer. Missing parts count as zero,
+ * so `4.6` and `4.6.0` are the same version.
+ */
+const compareVersions = (a: string, b: string): number => {
+  const partsOf = (version: string): number[] =>
+    String(version ?? '')
+      .split('.')
+      .map(part => Number.parseInt(part, 10) || 0);
+
+  const [aParts, bParts] = [partsOf(a), partsOf(b)];
+  for (let i = 0; i < Math.max(aParts.length, bParts.length); i++) {
+    const difference = (aParts[i] ?? 0) - (bParts[i] ?? 0);
+    if (difference) return difference;
+  }
+  return 0;
+};
+
 interface InternalAppVersionStatusViaAsset {
   /**
    * Whether the app is in maintenance mode.
@@ -114,6 +154,9 @@ interface InternalAppVersionStatusViaAsset {
   minVersion: string;
   /**
    * The optional messages for each of the app's versions.
+   *
+   * A message is either a single string, in whatever language the app was written for, or a map of language to
+   * message — `{ "4.6.0": { "en": "…", "it": "…" } }` — shown in the user's own language.
    */
-  messages: { [version: string]: markdown };
+  messages: { [version: string]: markdown | { [language: string]: markdown } };
 }
