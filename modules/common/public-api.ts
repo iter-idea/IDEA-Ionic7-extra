@@ -62,6 +62,7 @@ export * from './src/linkify.pipe';
 export * from './src/loading.service';
 export * from './src/message.service';
 export * from './src/storage.service';
+export * from './src/versions';
 export * from './src/webSocketApi.service';
 
 export * from './environment';
