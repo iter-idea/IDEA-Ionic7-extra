@@ -26,8 +26,6 @@
 - [idea-manage-attachments-section](modules/common/src/attachments/manageAttachmentsSection.component.md)
 - [idea-checker](modules/common/src/checker/checker.component.md)
 - [idea-checks](modules/common/src/checker/checks.component.md)
-- [idea-chip-checker](modules/common/src/checker/chipChecker.component.md)
-- [idea-inline-checker](modules/common/src/checker/inlineChecker.component.md)
 - [idea-custom-block](modules/common/src/customFields/customBlock.component.md)
 - [idea-custom-block-meta](modules/common/src/customFields/customBlockMeta.component.md)
 - [idea-custom-field-meta](modules/common/src/customFields/customFieldMeta.component.md)

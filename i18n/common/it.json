@@ -42,8 +42,7 @@
       "NUM_ELEMENTS_SELECTED": "{{num}} elementi selezionati",
       "RESET": "Reset",
       "SEARCH": "Ricerca",
-      "SELECT_ALL": "Seleziona tutto",
-      "SHOW_ONLY_CHECKED": "Mostra solo selezionati"
+      "SELECT_ALL": "Seleziona tutto"
     },
     "CUSTOM_FIELDS": {
       "ADD_FIELD": "Aggiungi un campo",
