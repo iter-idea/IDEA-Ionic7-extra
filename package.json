@@ -63,7 +63,7 @@
     "docs-soap": "^1.2.1",
     "eslint": "^9.32.0",
     "heic2any": "^0.0.4",
-    "idea-toolbox": "^7.3.0",
+    "idea-toolbox": "^7.4.0",
     "ng-packagr": "^22.0.0",
     "prettier": "^3.6.2",
     "qrcode": "^1.5.4",

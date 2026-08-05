@@ -171,6 +171,17 @@
       "WHAT_DO_YOU_WANT_TO_INSERT": "What do you want to insert?",
       "YOU_CAN_INSERT_SPECIAL_SECTIONS": "Based on your position in the template, you will be able to add different kind of sections."
     },
+    "PICKER": {
+      "CLEAR": "Clear the selection",
+      "CLOSE": "Close",
+      "DESELECT_ALL": "Deselect all",
+      "LIMIT_OF_NUM": "(max {{num}})",
+      "NONE": "None",
+      "NO_ELEMENTS_FOUND": "No elements found",
+      "NUM_SELECTED": "{{num}} selected",
+      "SEARCH": "Search",
+      "SELECT_ALL": "Select all"
+    },
     "SELECT": {
       "CLEAR_SELECTION": "Clear selection",
       "CLOSE_WITHOUT_SELECTING": "Close without selecting anything",

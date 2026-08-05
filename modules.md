@@ -42,6 +42,8 @@
 - [idea-list](modules/common/src/list/list.component.md)
 - [idea-list-elements](modules/common/src/list/listElements.component.md)
 - [idea-pdf-template](modules/common/src/pdfTemplate/pdfTemplate.component.md)
+- [idea-picker](modules/common/src/picker/picker.component.md)
+- [idea-picker-list](modules/common/src/picker/pickerList.component.md)
 - [idea-select](modules/common/src/select/select.component.md)
 - [idea-suggestions](modules/common/src/select/suggestions.component.md)
 - [idea-show-hint-button](modules/common/src/showHintButton/showHintButton.component.md)

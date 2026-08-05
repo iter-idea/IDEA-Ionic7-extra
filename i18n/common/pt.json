@@ -171,6 +171,17 @@
       "WHAT_DO_YOU_WANT_TO_INSERT": "O que pretende inserir?",
       "YOU_CAN_INSERT_SPECIAL_SECTIONS": "Consoante a sua posição no modelo, poderá adicionar diferentes tipos de secções."
     },
+    "PICKER": {
+      "CLEAR": "Limpar a seleção",
+      "CLOSE": "Fechar",
+      "DESELECT_ALL": "Desmarcar tudo",
+      "LIMIT_OF_NUM": "(máx {{num}})",
+      "NONE": "Nenhum",
+      "NO_ELEMENTS_FOUND": "Nenhum elemento encontrado",
+      "NUM_SELECTED": "{{num}} selecionados",
+      "SEARCH": "Pesquisar",
+      "SELECT_ALL": "Selecionar tudo"
+    },
     "SELECT": {
       "CLEAR_SELECTION": "Limpar Seleção",
       "CLOSE_WITHOUT_SELECTING": "Fechar sem selecionar",

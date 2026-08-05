@@ -171,6 +171,17 @@
       "WHAT_DO_YOU_WANT_TO_INSERT": "¿Qué es lo que quieres insertar?",
       "YOU_CAN_INSERT_SPECIAL_SECTIONS": "Basado en su posición en la plantilla, serás capaz de agregar diferentes tipos de secciones."
     },
+    "PICKER": {
+      "CLEAR": "Vaciar la selección",
+      "CLOSE": "Cerrar",
+      "DESELECT_ALL": "Deseleccionar todo",
+      "LIMIT_OF_NUM": "(máx {{num}})",
+      "NONE": "Ninguno",
+      "NO_ELEMENTS_FOUND": "No se han encontrado elementos",
+      "NUM_SELECTED": "{{num}} seleccionados",
+      "SEARCH": "Buscar",
+      "SELECT_ALL": "Seleccionar todo"
+    },
     "SELECT": {
       "CLEAR_SELECTION": "Borrar selección",
       "CLOSE_WITHOUT_SELECTING": "Cerrar sin seleccionar nada",

@@ -35,6 +35,10 @@ export * from './src/list/listElements.component';
 
 export * from './src/pdfTemplate/pdfTemplate.component';
 
+export * from './src/picker/picker.component';
+export * from './src/picker/pickerList.component';
+export * from './src/picker/picker.service';
+
 export * from './src/select/select.component';
 export * from './src/select/suggestions.component';
 

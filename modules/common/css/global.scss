@@ -169,6 +169,35 @@ ion-popover.chipCheckerPopover::part(content) {
   }
 }
 
+// idea-picker's overlay. Everything an app usually restyles is a custom property on `idea-picker-list`
+// (--option-min-height, --option-font-size, --option-border-color, …): set them on your own class and pass it
+// to the picker as `overlayCssClass`, instead of reaching for the internals.
+ion-popover.ideaPickerPopover {
+  // min and max in px so a long option stays readable on any screen, the middle in vw so it grows with it
+  --width: clamp(280px, 34vw, 460px);
+  --max-width: calc(100vw - 32px);
+  --max-height: 62vh;
+  // Ionic's own popover radius: the header has to carry it, or the surface beneath shows along the curve
+  idea-picker-list {
+    --header-radius: 4px 4px 0 0;
+  }
+}
+ion-modal.ideaPickerModal {
+  --width: clamp(320px, 46vw, 620px);
+  --max-width: calc(100vw - 32px);
+  --height: min(600px, 80vh);
+  --border-radius: 10px;
+  // kept next to the overlay's own radius, so the two can't drift apart
+  idea-picker-list {
+    --header-radius: 10px 10px 0 0;
+  }
+}
+// on a phone the list takes the screen: there's nothing to gain from a window inside a window
+ion-modal.ideaPickerSheet {
+  --width: 100%;
+  --height: 100%;
+}
+
 :root {
   --ion-color-dark: #222428;
   --ion-color-dark-rgb: 34, 36, 40;
