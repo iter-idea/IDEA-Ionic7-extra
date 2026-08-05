@@ -228,10 +228,23 @@ export class IDEAPickerComponent {
    * The picked value: one value, or an array of them with `multiple`. With `reorder` the array is ordered.
    */
   readonly value = model<any>(null);
+  /**
+   * Whether more than one option can be picked: it decides whether the value is one or an array.
+   */
   readonly multiple = input(false, { transform: booleanAttribute });
 
+  /**
+   * What is being picked. It names the field for assistive technology, titles the overlay when that
+   * covers the screen, and is only drawn here when `labelPlacement` asks for it.
+   */
   readonly label = input<string>('');
+  /**
+   * Where to draw the label, when the field shell around this one does not already own it.
+   */
   readonly labelPlacement = input<PickerLabelPlacement>('none');
+  /**
+   * What to show while nothing is picked, in the muted ink of a placeholder.
+   */
   readonly placeholder = input<string>('');
   /**
    * What to show when the value can't be resolved among the options: they haven't loaded yet, or they no
@@ -239,7 +252,13 @@ export class IDEAPickerComponent {
    * so it can't end up contradicting the list it sits on.
    */
   readonly selectedText = input<string>('');
+  /**
+   * Whether the field refuses to open.
+   */
   readonly disabled = input(false, { transform: booleanAttribute });
+  /**
+   * The shape of the trigger: a form field, or a chip for a filter bar.
+   */
   readonly appearance = input<PickerAppearance>('field');
   /**
    * How many names to list before the preview collapses to their number.
@@ -247,7 +266,8 @@ export class IDEAPickerComponent {
   readonly previewMax = input(2);
 
   /**
-   * What to show when nothing is picked.
+   * What to show when nothing is picked — in the field and as the label of the row that empties it.
+   * Useful when "nothing" means something: a filter where no choice means every one of them.
    */
   readonly emptyText = input<string>('');
   /**
@@ -259,25 +279,61 @@ export class IDEAPickerComponent {
    */
   readonly noneMeansAll = input(false, { transform: booleanAttribute });
 
+  /**
+   * How the list is presented. `auto` decides from the length of the list — see IDEAPickerService.
+   */
   readonly interface = input<PickerInterface>('auto');
   /**
    * Beyond this many options the list gets a searchbar — and, with `interface: 'auto'`, opens centered.
    */
   readonly searchThreshold = input(10);
+  /**
+   * What the searchbar suggests to type. It falls back to a translated "Search".
+   */
   readonly searchPlaceholder = input<string>('');
+  /**
+   * A class on the overlay, to scope its custom properties to this picker alone.
+   */
   readonly overlayCssClass = input<string>('');
 
-  readonly sortBy = input<'name' | 'none'>('name');
+  /**
+   * `none` keeps the options in the order they are given, like `ion-select` does with the ones you
+   * declare: on a hand-written list that order is a decision. Set `name` for a list that comes from
+   * the data, where alphabetical is what makes it scannable.
+   */
+  readonly sortBy = input<'name' | 'none'>('none');
+  /**
+   * `auto` groups the list under headings when at least two options carry a different `group`.
+   */
   readonly groupBy = input<'auto' | 'none'>('auto');
   /**
    * Whether to show the value below the name of each option.
    */
   readonly showValue = input(false, { transform: booleanAttribute });
+  /**
+   * Whether the list offers a row that empties the field, and the chip its clear button.
+   */
   readonly clearable = input(true, { transform: booleanAttribute });
+  /**
+   * Whether the list offers to select or deselect everything the search is showing.
+   */
   readonly selectAll = input(false, { transform: booleanAttribute });
+  /**
+   * How many options can be picked at once; beyond it the others stop responding.
+   */
   readonly maxSelection = input<number>(undefined);
+  /**
+   * Whether the picked options can be dragged into an order. With this, the value's order is part
+   * of the value, and the list stops grouping: headings would contradict it.
+   */
   readonly reorder = input(false, { transform: booleanAttribute });
+  /**
+   * Whether a value that is not among the options can be typed in and picked.
+   */
   readonly allowCustomValues = input(false, { transform: booleanAttribute });
+  /**
+   * What to write before a typed-in value in the list, to say what picking it will do.
+   */
   readonly customValuePrefix = input<string>('');
 
   isOpen = signal(false);
@@ -317,7 +373,7 @@ export class IDEAPickerComponent {
     if (!this.multiple()) {
       const picked = this.selectedOptions()[0];
       if (picked) return picked.name;
-      if (!values.length) return '';
+      if (!values.length) return this.emptyText();
       // the options can't name this value: either they aren't loaded, or it was typed in as a custom one
       return this.selectedText() || String(values[0]);
     }
@@ -354,6 +410,7 @@ export class IDEAPickerComponent {
         maxSelection: this.maxSelection(),
         reorder: this.reorder(),
         allowCustomValues: this.allowCustomValues(),
+        emptyText: this.emptyText(),
         customValuePrefix: this.customValuePrefix(),
         interface: this.interface(),
         overlayCssClass: this.overlayCssClass(),

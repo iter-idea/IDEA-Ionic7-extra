@@ -47,6 +47,10 @@ export interface IDEAPickerParams {
   reorder?: boolean;
   allowCustomValues?: boolean;
   customValuePrefix?: string;
+  /**
+   * The label of the row that empties the selection, when "nothing" has a name of its own.
+   */
+  emptyText?: string;
   interface?: PickerInterface;
   /**
    * A class on the overlay, to set its custom properties.
@@ -88,7 +92,7 @@ export class IDEAPickerService {
       multiple: !!params.multiple,
       searchPlaceholder: params.searchPlaceholder,
       searchThreshold,
-      sortBy: params.sortBy ?? 'name',
+      sortBy: params.sortBy ?? 'none',
       groupBy: params.groupBy ?? 'auto',
       showValue: !!params.showValue,
       clearable: params.clearable ?? true,
@@ -97,6 +101,7 @@ export class IDEAPickerService {
       reorder: !!params.reorder,
       allowCustomValues: !!params.allowCustomValues,
       customValuePrefix: params.customValuePrefix,
+      emptyText: params.emptyText,
       presentation
     };
 

@@ -130,7 +130,7 @@ interface Row {
           [class.selected]="!selected().length"
           (click)="clear()"
         >
-          <ion-label>{{ 'IDEA_COMMON.PICKER.NONE' | translate }}</ion-label>
+          <ion-label>{{ emptyText || ('IDEA_COMMON.PICKER.NONE' | translate) }}</ion-label>
           @if (!selected().length) {
             <ion-icon slot="end" icon="checkmark" color="primary" size="small" />
           }
@@ -418,19 +418,60 @@ export class IDEAPickerListComponent implements OnInit {
    * Note: the overlay is created through `componentProps`, which can't feed signal inputs.
    */
   @Input() options: (PickOption | PickOptionLike)[] = [];
+  /**
+   * The current value: it pre-selects the options, and with `reorder` it dictates their order.
+   */
   @Input() value: any;
+  /**
+   * Whether more than one option can be picked.
+   */
   @Input() multiple = false;
+  /**
+   * What the searchbar suggests to type.
+   */
   @Input() searchPlaceholder?: string;
+  /**
+   * Beyond this many options the list gets a searchbar.
+   */
   @Input() searchThreshold = 10;
-  @Input() sortBy: 'name' | 'none' = 'name';
+  /**
+   * `none` keeps the options in the order they are given; `name` sorts them alphabetically.
+   */
+  @Input() sortBy: 'name' | 'none' = 'none';
+  /**
+   * `auto` groups the list under headings when at least two options carry a different `group`.
+   */
   @Input() groupBy: 'auto' | 'none' = 'auto';
+  /**
+   * Whether to show each option's value below its name.
+   */
   @Input() showValue = false;
+  /**
+   * Whether the list offers a row that empties the selection.
+   */
   @Input() clearable = true;
+  /**
+   * Whether to offer selecting or deselecting everything the search is showing.
+   */
   @Input() selectAll = false;
+  /**
+   * How many options can be picked at once.
+   */
   @Input() maxSelection?: number;
+  /**
+   * Whether the picked options can be dragged into an order.
+   */
   @Input() reorder = false;
+  /**
+   * Whether a value that is not among the options can be typed in and picked.
+   */
   @Input() allowCustomValues = false;
+  /**
+   * What to write before a typed-in value in the list.
+   */
   @Input() customValuePrefix?: string;
+  /** The label of the row that empties the selection. */
+  @Input() emptyText?: string;
   /**
    * How the overlay was presented: it decides which controller dismisses it, and whether the header is
    * needed at all — only an anchored popover can be left by tapping outside it.
