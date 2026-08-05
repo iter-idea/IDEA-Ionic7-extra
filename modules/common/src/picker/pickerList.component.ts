@@ -475,6 +475,7 @@ export class IDEAPickerListComponent implements OnInit {
   private optionOffset = computed((): number => (this.canClear() ? 1 : 0));
   private navigableCount = computed((): number => this.matching().length + this.optionOffset());
   readonly searchbar = viewChild<IonSearchbar>('searchbar');
+  readonly content = viewChild(IonContent);
 
   protected readonly String = String;
 
@@ -570,6 +571,9 @@ export class IDEAPickerListComponent implements OnInit {
   search(toSearch?: string): void {
     this.query.set(toSearch ?? '');
     this.renderLimit.set(PAGE_SIZE);
+    /* the results start from the top; leaving the scroll where it was would also sit it at the end of a
+       now-shorter list, where every scroll event asks for another page */
+    this.content()?.scrollToTop();
     /* while typing, the top result is the one Enter confirms */
     this.activeIndex.set(this.query() && this.matching().length ? this.optionOffset() : -1);
   }
