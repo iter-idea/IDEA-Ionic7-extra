@@ -25,6 +25,7 @@ import {
 import { PickOption, PickOptionLike } from 'idea-toolbox';
 
 import { IDEATranslatePipe } from '../translations/translate.pipe';
+import { IDEATranslationsService } from '../translations/translations.service';
 
 /** How many options enter the DOM at a time. */
 const PAGE_SIZE = 60;
@@ -343,7 +344,10 @@ interface Row {
       .pickerGroup {
         position: sticky;
         top: 0;
-        z-index: 1;
+        /* above what an ion-item lets through: the item is relative with z-index auto, so it is no
+           stacking context of its own and its insides land in this one — its native box at 1, and the
+           checkbox of a multiple list at 2. Below that, the rows scroll over the heading, not under it */
+        z-index: 3;
         padding: 7px var(--option-padding-start, 16px);
         font-size: 0.72em;
         font-weight: 600;
@@ -413,6 +417,7 @@ interface Row {
 export class IDEAPickerListComponent implements OnInit {
   private _modal = inject(ModalController);
   private _popover = inject(PopoverController);
+  private _translate = inject(IDEATranslationsService);
 
   /**
    * Note: the overlay is created through `componentProps`, which can't feed signal inputs.
@@ -462,6 +467,10 @@ export class IDEAPickerListComponent implements OnInit {
    * Whether the picked options can be dragged into an order.
    */
   @Input() reorder = false;
+  /**
+   * `auto` opens a long list on what is already picked, in a band above the rest.
+   */
+  @Input() pinSelected: 'auto' | 'none' = 'auto';
   /**
    * Whether a value that is not among the options can be typed in and picked.
    */
@@ -523,6 +532,17 @@ export class IDEAPickerListComponent implements OnInit {
   private sorted: PickOption[] = [];
   /** The options as the class, whatever shape they came in. */
   private allOptions: PickOption[] = [];
+  /**
+   * The values selected when the overlay opened: the list starts with them, so a long one opens on what
+   * you already picked instead of on its first letter.
+   * It is a snapshot on purpose. Following the selection live would make rows leave the band under the
+   * pointer as they are unchecked, moving everything below them — and unchecking is precisely what one
+   * comes here to do.
+   */
+  private pinned = new Set<string>();
+  /** The two band headings, resolved once: they are rendered as group headings, which carry plain text. */
+  private pinnedHeading = '';
+  private othersHeading = '';
   /** Ids must be unique per instance: a picker opened over another one would otherwise collide. */
   protected readonly instanceId = 'ideaPicker'.concat(String(Math.round(Math.random() * 1e9)));
 
@@ -531,20 +551,42 @@ export class IDEAPickerListComponent implements OnInit {
    */
   matching = computed((): PickOption[] => {
     const query = this.query();
-    return this.sorted.filter(x => x.matches(query));
+    const matching = this.sorted.filter(x => x.matches(query));
+    if (!this.pinned.size) return matching;
+    /* the partition sits on top of the order, it doesn't replace it: `sortBy` and the grouping pass
+       decided the sequence, and each of the two bands keeps it */
+    const pinned = matching.filter(x => this.pinned.has(String(x.value)));
+    if (!pinned.length) return matching;
+    return pinned.concat(matching.filter(x => !this.pinned.has(String(x.value))));
   });
+  /** Where the pinned band ends: the second heading goes here, and nowhere if there is no band. */
+  pinnedCount = computed((): number =>
+    this.pinned.size ? this.matching().filter(x => this.pinned.has(String(x.value))).length : 0
+  );
   /**
    * Headings are interleaved here, so the template renders one list and the keyboard still sees indexes.
    */
   rows = computed((): Row[] => {
-    const matching = (this.reorder ? this.matching().filter(o => !this.isSelected(o)) : this.matching()).slice(
-      0,
-      this.renderLimit()
-    );
+    const all = this.reorder ? this.matching().filter(o => !this.isSelected(o)) : this.matching();
+    const matching = all.slice(0, this.renderLimit());
+    /* a band holding everything the search left is not a band: naming it would only add two headings
+       to a list that has no second part to tell it apart from */
+    const pinnedCount = this.pinnedCount() < all.length ? this.pinnedCount() : 0;
     const rows: Row[] = [];
     let lastGroup: string = null;
     matching.forEach((option, index): void => {
-      if (this.shouldGroup() && option.group && option.group !== lastGroup) {
+      const opensAGroup = this.shouldGroup() && !!option.group;
+      if (pinnedCount) {
+        if (index === 0) rows.push({ group: this.pinnedHeading });
+        else if (index === pinnedCount) {
+          /* where the list resumes under a heading of its own, a second one right above it would be two
+             bands of the same shape saying one thing */
+          if (!opensAGroup) rows.push({ group: this.othersHeading });
+          // the groups below start over: the band interrupted them, so the first one has to name itself again
+          lastGroup = null;
+        }
+      }
+      if (opensAGroup && index >= pinnedCount && option.group !== lastGroup) {
         lastGroup = option.group;
         rows.push({ group: option.group });
       }
@@ -567,6 +609,15 @@ export class IDEAPickerListComponent implements OnInit {
     this.selected.set(values.map(v => this.allOptions.find(o => String(o.value) === String(v))).filter(x => x));
 
     this.sorted = this.sortOptions(this.allOptions);
+
+    /* only where the selection can actually be lost from sight: in a list short enough not to need a
+       search it is already on screen, and reshuffling a familiar short list buys nothing.
+       With `reorder` the band above the list does this job already, and owns the order besides. */
+    if (this.pinSelected === 'auto' && this.withSearch && !this.reorder && this.selected().length) {
+      this.pinned = new Set(this.selected().map(x => String(x.value)));
+      this.pinnedHeading = this._translate._('IDEA_COMMON.PICKER.PREVIOUSLY_SELECTED');
+      this.othersHeading = this._translate._('IDEA_COMMON.PICKER.OTHER_OPTIONS');
+    }
   }
   ionViewDidEnter(): void {
     if (this.withSearch) setTimeout((): void => this.focusSearchbar(), 100);

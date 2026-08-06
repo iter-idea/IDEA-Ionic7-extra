@@ -45,6 +45,10 @@ export interface IDEAPickerParams {
   selectAll?: boolean;
   maxSelection?: number;
   reorder?: boolean;
+  /**
+   * `auto` opens a long list on what is already picked, in a band above the rest.
+   */
+  pinSelected?: 'auto' | 'none';
   allowCustomValues?: boolean;
   customValuePrefix?: string;
   /**
@@ -99,6 +103,7 @@ export class IDEAPickerService {
       selectAll: !!params.selectAll,
       maxSelection: params.maxSelection,
       reorder: !!params.reorder,
+      pinSelected: params.pinSelected ?? 'auto',
       allowCustomValues: !!params.allowCustomValues,
       customValuePrefix: params.customValuePrefix,
       emptyText: params.emptyText,

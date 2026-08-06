@@ -178,6 +178,8 @@
       "NONE": "None",
       "NO_ELEMENTS_FOUND": "No elements found",
       "NUM_SELECTED": "{{num}} selected",
+      "OTHER_OPTIONS": "Other options",
+      "PREVIOUSLY_SELECTED": "Previously selected",
       "SEARCH": "Search",
       "SELECT_ALL": "Select all"
     },

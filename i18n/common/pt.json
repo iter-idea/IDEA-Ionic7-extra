@@ -178,6 +178,8 @@
       "NONE": "Nenhum",
       "NO_ELEMENTS_FOUND": "Nenhum elemento encontrado",
       "NUM_SELECTED": "{{num}} selecionados",
+      "OTHER_OPTIONS": "Outras opções",
+      "PREVIOUSLY_SELECTED": "Seleção anterior",
       "SEARCH": "Pesquisar",
       "SELECT_ALL": "Selecionar tudo"
     },

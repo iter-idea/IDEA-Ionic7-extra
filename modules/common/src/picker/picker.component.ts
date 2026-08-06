@@ -328,6 +328,13 @@ export class IDEAPickerComponent {
    */
   readonly reorder = input(false, { transform: booleanAttribute });
   /**
+   * `auto` opens a list long enough to need a search on what is already picked: the options carrying the
+   * current value lead it, in a band above the rest, so a selection scattered through hundreds of them is
+   * visible at once instead of having to be hunted for. The band is fixed when the list opens, so nothing
+   * moves while you work. Set `none` to always open on the plain order.
+   */
+  readonly pinSelected = input<'auto' | 'none'>('auto');
+  /**
    * Whether a value that is not among the options can be typed in and picked.
    */
   readonly allowCustomValues = input(false, { transform: booleanAttribute });
@@ -409,6 +416,7 @@ export class IDEAPickerComponent {
         selectAll: this.selectAll(),
         maxSelection: this.maxSelection(),
         reorder: this.reorder(),
+        pinSelected: this.pinSelected(),
         allowCustomValues: this.allowCustomValues(),
         emptyText: this.emptyText(),
         customValuePrefix: this.customValuePrefix(),

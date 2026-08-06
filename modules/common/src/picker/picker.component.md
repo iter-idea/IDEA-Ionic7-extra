@@ -39,5 +39,9 @@ idea-picker
 - `maxSelection` (_number_) - How many options can be picked at once; beyond it the others stop responding.
 - `reorder` (_boolean_) - Whether the picked options can be dragged into an order. With this, the value's order is part
   of the value, and the list stops grouping: headings would contradict it.
+- `pinSelected` (_'auto' | 'none'_) - `auto` opens a list long enough to need a search on what is already picked: the options carrying the
+  current value lead it, in a band above the rest, so a selection scattered through hundreds of them is
+  visible at once instead of having to be hunted for. The band is fixed when the list opens, so nothing
+  moves while you work. Set `none` to always open on the plain order.
 - `allowCustomValues` (_boolean_) - Whether a value that is not among the options can be typed in and picked.
 - `customValuePrefix` (_string_) - What to write before a typed-in value in the list, to say what picking it will do.

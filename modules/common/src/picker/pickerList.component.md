@@ -18,6 +18,7 @@ idea-picker-list
 - `selectAll` (_boolean_) - Whether to offer selecting or deselecting everything the search is showing.
 - `maxSelection` (_number_) - How many options can be picked at once.
 - `reorder` (_boolean_) - Whether the picked options can be dragged into an order.
+- `pinSelected` (_"none" | "auto"_) - `auto` opens a long list on what is already picked, in a band above the rest.
 - `allowCustomValues` (_boolean_) - Whether a value that is not among the options can be typed in and picked.
 - `customValuePrefix` (_string_) - What to write before a typed-in value in the list.
 - `emptyText` (_string_) - The label of the row that empties the selection.
