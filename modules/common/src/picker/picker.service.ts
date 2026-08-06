@@ -36,6 +36,7 @@ export interface IDEAPickerParams {
   searchPlaceholder?: string;
   /**
    * Beyond this many options the list gets a searchbar — and, with `interface: 'auto'`, opens centered.
+   * With `allowCustomValues` the searchbar is always there.
    */
   searchThreshold?: number;
   sortBy?: 'name' | 'none';

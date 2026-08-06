@@ -10,7 +10,7 @@ idea-picker-list
 - `value` (_any_) - The current value: it pre-selects the options, and with `reorder` it dictates their order.
 - `multiple` (_boolean_) - Whether more than one option can be picked.
 - `searchPlaceholder` (_string_) - What the searchbar suggests to type.
-- `searchThreshold` (_number_) - Beyond this many options the list gets a searchbar.
+- `searchThreshold` (_number_) - Beyond this many options the list gets a searchbar; with `allowCustomValues` it always has one.
 - `sortBy` (_"name" | "none"_) - `none` keeps the options in the order they are given; `name` sorts them alphabetically.
 - `groupBy` (_"none" | "auto"_) - `auto` groups the list under headings when at least two options carry a different `group`.
 - `showValue` (_boolean_) - Whether to show each option's value below its name.

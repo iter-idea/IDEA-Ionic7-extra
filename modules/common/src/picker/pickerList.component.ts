@@ -229,7 +229,7 @@ interface Row {
          The surface is resolved once into a private name: reading --background inside the value of
          --background would be a circular reference, which CSS throws away. */
       :host {
-        --pickerSurface: var(--background, var(--ion-item-background, var(--ion-background-color, #fff)));
+        --pickerSurface: var(--picker-background, var(--ion-item-background, var(--ion-background-color, #fff)));
       }
       /* a plain header, not an ion-toolbar: a toolbar picks up the app's (usually dark) toolbar theme,
          which on a small anchored popover reads as a different component altogether */
@@ -237,10 +237,11 @@ interface Row {
       .pickerHeader {
         /* an opaque header clipped by the overlay's rounded corner leaves a hairline of the surface
            beneath showing along the curve: it has to carry the same curve, not be cut by it */
-        border-radius: var(--header-radius, 0);
-        background: var(--header-background, var(--pickerSurface));
-        color: var(--header-color, inherit);
-        border-bottom: 1px solid var(--option-border-color, var(--ion-border-color, var(--ion-color-step-150, #e0e0e0)));
+        border-radius: var(--picker-header-radius, 0);
+        background: var(--picker-header-background, var(--pickerSurface));
+        color: var(--picker-header-color, inherit);
+        border-bottom: 1px solid
+          var(--picker-option-border-color, var(--ion-border-color, var(--ion-color-step-150, #e0e0e0)));
       }
       .pickerHeaderMain {
         display: flex;
@@ -278,7 +279,7 @@ interface Row {
       .pickerHeaderBtn:hover,
       .pickerHeaderBtn:focus-visible {
         opacity: 1;
-        background: var(--option-background-selected, rgba(var(--ion-color-primary-rgb), 0.09));
+        background: var(--picker-option-background-selected, rgba(var(--ion-color-primary-rgb), 0.09));
       }
       .pickerHeaderBtn ion-icon {
         font-size: 20px;
@@ -324,14 +325,14 @@ interface Row {
       .pickerHeaderActions button:hover,
       .pickerHeaderActions button:focus-visible {
         opacity: 1;
-        background: var(--option-background-selected, rgba(var(--ion-color-primary-rgb), 0.09));
+        background: var(--picker-option-background-selected, rgba(var(--ion-color-primary-rgb), 0.09));
       }
       ion-content {
         --background: var(--pickerSurface);
       }
       ion-searchbar {
-        --box-shadow: var(--search-box-shadow, none);
-        --border-radius: var(--search-border-radius, 8px);
+        --box-shadow: var(--picker-search-box-shadow, none);
+        --border-radius: var(--picker-search-border-radius, 8px);
         flex: 1;
         min-width: 0;
         min-height: 38px;
@@ -348,17 +349,17 @@ interface Row {
            stacking context of its own and its insides land in this one — its native box at 1, and the
            checkbox of a multiple list at 2. Below that, the rows scroll over the heading, not under it */
         z-index: 3;
-        padding: 7px var(--option-padding-start, 16px);
+        padding: 7px var(--picker-option-padding-start, 16px);
         font-size: 0.72em;
         font-weight: 600;
         letter-spacing: 0.08em;
         text-transform: uppercase;
-        color: var(--group-color, var(--ion-color-medium, #92949c));
+        color: var(--picker-group-color, var(--ion-color-medium, #92949c));
         /* the tint is layered over an opaque surface: a sticky heading must not let rows show through */
-        background-color: var(--group-background, var(--option-background, var(--pickerSurface)));
+        background-color: var(--picker-group-background, var(--picker-option-background, var(--pickerSurface)));
         background-image: linear-gradient(
-          var(--group-tint, rgba(var(--ion-text-color-rgb, 0, 0, 0), 0.05)),
-          var(--group-tint, rgba(var(--ion-text-color-rgb, 0, 0, 0), 0.05))
+          var(--picker-group-tint, rgba(var(--ion-text-color-rgb, 0, 0, 0), 0.05)),
+          var(--picker-group-tint, rgba(var(--ion-text-color-rgb, 0, 0, 0), 0.05))
         );
       }
       /* room to breathe where one group ends and the next begins */
@@ -373,19 +374,19 @@ interface Row {
         --inner-border-width: 0;
       }
       ion-item.pickerOption {
-        --background: var(--option-background, var(--pickerSurface));
-        --min-height: var(--option-min-height, 48px);
-        --padding-start: var(--option-padding-start, 16px);
+        --background: var(--picker-option-background, var(--pickerSurface));
+        --min-height: var(--picker-option-min-height, 48px);
+        --padding-start: var(--picker-option-padding-start, 16px);
         --inner-padding-end: 14px;
-        --border-color: var(--option-border-color, var(--ion-border-color, var(--ion-color-step-150, #e0e0e0)));
-        font-size: var(--option-font-size, inherit);
+        --border-color: var(--picker-option-border-color, var(--ion-border-color, var(--ion-color-step-150, #e0e0e0)));
+        font-size: var(--picker-option-font-size, inherit);
       }
       ion-item.pickerOption.selected {
-        --background: var(--option-background-selected, rgba(var(--ion-color-primary-rgb), 0.09));
+        --background: var(--picker-option-background-selected, rgba(var(--ion-color-primary-rgb), 0.09));
       }
       /* the option the arrow keys are on: it must read as "here", without looking selected */
       ion-item.pickerOption.active {
-        --background: var(--option-background-selected, rgba(var(--ion-color-primary-rgb), 0.09));
+        --background: var(--picker-option-background-selected, rgba(var(--ion-color-primary-rgb), 0.09));
         box-shadow: inset 3px 0 0 var(--ion-color-primary);
       }
       ion-item.pickerOption ion-checkbox {
@@ -436,7 +437,7 @@ export class IDEAPickerListComponent implements OnInit {
    */
   @Input() searchPlaceholder?: string;
   /**
-   * Beyond this many options the list gets a searchbar.
+   * Beyond this many options the list gets a searchbar; with `allowCustomValues` it always has one.
    */
   @Input() searchThreshold = 10;
   /**
@@ -602,7 +603,9 @@ export class IDEAPickerListComponent implements OnInit {
   ngOnInit(): void {
     /* the service already normalises, but the overlay can be presented directly too */
     this.allOptions = PickOption.list(this.options);
-    this.withSearch = this.allOptions.length > this.searchThreshold;
+    /* typing is the only way to reach a custom value, so that list always gets its searchbar however
+       short it is — including when it is empty, which is where a typed value matters most */
+    this.withSearch = this.allowCustomValues || this.allOptions.length > this.searchThreshold;
 
     const values = this.valueAsArray();
     // the selection follows the order of the value, so that `reorder` round-trips

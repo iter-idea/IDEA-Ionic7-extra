@@ -29,7 +29,7 @@ export type PickerAppearance = 'field' | 'chip';
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     // resolved once from the app's mode; they are only the fallbacks of the public properties, so that an app
-    // setting `--icon-color` still wins over them
+    // setting `--picker-icon-color` still wins over them
     '[style.--pickerIconSizeByMode]': 'iconSizeByMode',
     '[style.--pickerIconColorByMode]': 'iconColorByMode',
     '[style.--pickerIconTransformByMode]': 'iconTransformByMode'
@@ -94,6 +94,19 @@ export type PickerAppearance = 'field' | 'chip';
            leaves most of the field dead to the pointer */
         align-self: stretch;
       }
+      /* dropped into a named slot of an ion-item it is not the row, it is what sits at one end of it —
+         so it takes the width of its content, the way Ionic's own controls do there */
+      :host([slot='start']),
+      :host([slot='end']) {
+        width: auto;
+        max-width: 100%;
+        align-self: center;
+      }
+      /* one line of text is a 21px tap target: there it keeps Ionic's minimum, as its controls do */
+      :host([slot='start']) button.pickerField,
+      :host([slot='end']) button.pickerField {
+        min-height: var(--picker-min-height, 44px);
+      }
       /* The public custom properties are deliberately NOT declared on :host: with emulated encapsulation
          that compiles to an attribute selector, which would beat an app's "idea-picker { … }" rule. Each one
          is read with its default inline instead, so whoever sets it from outside always wins. */
@@ -107,7 +120,7 @@ export type PickerAppearance = 'field' | 'chip';
         border: 0;
         background: none;
         font: inherit;
-        color: var(--color, var(--ion-text-color));
+        color: var(--picker-color, var(--ion-text-color));
         text-align: start;
         cursor: pointer;
       }
@@ -123,9 +136,10 @@ export type PickerAppearance = 'field' | 'chip';
 
       button.pickerField {
         height: 100%;
-        min-height: var(--min-height, auto);
-        padding: var(--padding-top, 0px) var(--padding-end, 0px) var(--padding-bottom, 0px) var(--padding-start, 0px);
-        font-size: var(--font-size, inherit);
+        min-height: var(--picker-min-height, auto);
+        padding: var(--picker-padding-top, 0px) var(--picker-padding-end, 0px) var(--picker-padding-bottom, 0px)
+          var(--picker-padding-start, 0px);
+        font-size: var(--picker-font-size, inherit);
       }
       button.pickerField.stacked {
         flex-direction: column;
@@ -134,8 +148,10 @@ export type PickerAppearance = 'field' | 'chip';
       button.pickerField.start {
         gap: 12px;
       }
+      /* the ink of the surrounding text, like Ionic's own stacked label: inside an ion-item a muted one
+         would be the single thing telling this apart from the ion-select above it */
       .pickerLabel {
-        color: var(--label-color, var(--ion-color-medium, #92949c));
+        color: var(--picker-label-color, inherit);
         font-size: 0.75em;
         line-height: 1.4;
       }
@@ -150,27 +166,29 @@ export type PickerAppearance = 'field' | 'chip';
         min-width: 0;
         width: 100%;
       }
+      /* one truncated line by default; a value of normal lets a long selection wrap instead, for a
+         field whose row can grow */
       .pickerText {
         flex: 1;
         min-width: 16px;
         overflow: hidden;
-        white-space: nowrap;
+        white-space: var(--picker-text-white-space, nowrap);
         text-overflow: ellipsis;
       }
       .pickerText.placeholder {
-        color: var(--placeholder-color, currentColor);
-        opacity: var(--placeholder-opacity, 0.6);
+        color: var(--picker-placeholder-color, currentColor);
+        opacity: var(--picker-placeholder-opacity, 0.6);
       }
       /* size, colour and rotation are Ionic's own, per mode; the app can still override each of the three */
       .pickerIcon {
         flex: none;
         margin-inline-start: 4px;
-        font-size: var(--icon-size, var(--pickerIconSizeByMode));
-        color: var(--icon-color, var(--pickerIconColorByMode));
+        font-size: var(--picker-icon-size, var(--pickerIconSizeByMode));
+        color: var(--picker-icon-color, var(--pickerIconColorByMode));
         transition: transform 0.15s cubic-bezier(0.4, 0, 0.2, 1);
       }
       .pickerIcon.expanded {
-        transform: var(--icon-transform-expanded, var(--pickerIconTransformByMode));
+        transform: var(--picker-icon-transform-expanded, var(--pickerIconTransformByMode));
       }
       @media (prefers-reduced-motion: reduce) {
         .pickerIcon {
@@ -183,21 +201,21 @@ export type PickerAppearance = 'field' | 'chip';
         gap: 6px;
         min-height: 34px;
         padding: 0 12px;
-        border: 1px solid var(--border-color, var(--ion-border-color, var(--ion-color-step-150, #e0e0e0)));
-        border-radius: var(--border-radius, 999px);
-        background: var(--background, transparent);
+        border: 1px solid var(--picker-border-color, var(--ion-border-color, var(--ion-color-step-150, #e0e0e0)));
+        border-radius: var(--picker-border-radius, 999px);
+        background: var(--picker-background, transparent);
         font-size: 0.85em;
       }
       button.pickerChip.active {
-        border-color: var(--color-selected, var(--ion-color-primary));
-        background: var(--background-selected, transparent);
+        border-color: var(--picker-color-selected, var(--ion-color-primary));
+        background: var(--picker-background-selected, transparent);
       }
       .pickerChipLabel {
         opacity: 0.6;
         font-weight: 500;
       }
       button.pickerChip.active .pickerChipLabel {
-        color: var(--color-selected, var(--ion-color-primary));
+        color: var(--picker-color-selected, var(--ion-color-primary));
         opacity: 0.85;
       }
       .pickerChipValue {
@@ -285,6 +303,7 @@ export class IDEAPickerComponent {
   readonly interface = input<PickerInterface>('auto');
   /**
    * Beyond this many options the list gets a searchbar — and, with `interface: 'auto'`, opens centered.
+   * With `allowCustomValues` the searchbar is always there: it is the only way to type one in.
    */
   readonly searchThreshold = input(10);
   /**
@@ -335,7 +354,8 @@ export class IDEAPickerComponent {
    */
   readonly pinSelected = input<'auto' | 'none'>('auto');
   /**
-   * Whether a value that is not among the options can be typed in and picked.
+   * Whether a value that is not among the options can be typed in and picked. It gives the list a
+   * searchbar whatever `searchThreshold` says, since typing is how the value gets in.
    */
   readonly allowCustomValues = input(false, { transform: booleanAttribute });
   /**

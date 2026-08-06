@@ -27,6 +27,7 @@ idea-picker
 - `noneMeansAll` (_boolean_) - Whether picking nothing means picking everything: the semantics of a filter.
 - `interface` (_PickerInterface_) - How the list is presented. `auto` decides from the length of the list — see IDEAPickerService.
 - `searchThreshold` (_number_) - Beyond this many options the list gets a searchbar — and, with `interface: 'auto'`, opens centered.
+  With `allowCustomValues` the searchbar is always there: it is the only way to type one in.
 - `searchPlaceholder` (_string_) - What the searchbar suggests to type. It falls back to a translated "Search".
 - `overlayCssClass` (_string_) - A class on the overlay, to scope its custom properties to this picker alone.
 - `sortBy` (_'name' | 'none'_) - `none` keeps the options in the order they are given, like `ion-select` does with the ones you
@@ -43,5 +44,6 @@ idea-picker
   current value lead it, in a band above the rest, so a selection scattered through hundreds of them is
   visible at once instead of having to be hunted for. The band is fixed when the list opens, so nothing
   moves while you work. Set `none` to always open on the plain order.
-- `allowCustomValues` (_boolean_) - Whether a value that is not among the options can be typed in and picked.
+- `allowCustomValues` (_boolean_) - Whether a value that is not among the options can be typed in and picked. It gives the list a
+  searchbar whatever `searchThreshold` says, since typing is how the value gets in.
 - `customValuePrefix` (_string_) - What to write before a typed-in value in the list, to say what picking it will do.
