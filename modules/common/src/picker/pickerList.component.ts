@@ -53,6 +53,7 @@ interface Row {
     IonReorder,
     IonReorderGroup
   ],
+  host: { '[class.pickerSheet]': "presentation === 'sheet'" },
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     @if (showHeader()) {
@@ -248,6 +249,20 @@ interface Row {
             var(--picker-option-border-color, var(--ion-border-color, var(--ion-color-step-150, #e0e0e0)))
           );
       }
+      /* a sheet fills the screen, so its header starts exactly where the status bar is. A plain header
+         buys freedom from the app's toolbar theme, but not the inset an ion-toolbar would have applied:
+         without this the row is drawn under the notch and the close button can't be reached at all.
+         The padding goes on the header, not inside it, so the bar's background runs under the status bar.
+         It reads env() and not --ion-safe-area-top on purpose: Ionic zeroes that variable on a sheet
+         modal, which normally stops short of the top — this one is pinned to the full screen, so the
+         inset is real and the variable would silently resolve to nothing */
+      :host(.pickerSheet) .pickerHeader {
+        padding-top: env(safe-area-inset-top, 0px);
+      }
+      /* the same at the other end: on a screen with a home indicator the last option would sit under it */
+      :host(.pickerSheet) ion-content {
+        --padding-bottom: env(safe-area-inset-bottom, 0px);
+      }
       .pickerHeaderMain {
         display: flex;
         align-items: center;
@@ -281,7 +296,12 @@ interface Row {
         opacity: 0.7;
         cursor: pointer;
       }
-      .pickerHeaderBtn:hover,
+      @media (hover: hover) {
+        .pickerHeaderBtn:hover {
+          opacity: 1;
+          background: var(--picker-option-background-selected, rgba(var(--ion-color-primary-rgb), 0.09));
+        }
+      }
       .pickerHeaderBtn:focus-visible {
         opacity: 1;
         background: var(--picker-option-background-selected, rgba(var(--ion-color-primary-rgb), 0.09));
@@ -327,7 +347,12 @@ interface Row {
         cursor: pointer;
         opacity: 0.8;
       }
-      .pickerHeaderActions button:hover,
+      @media (hover: hover) {
+        .pickerHeaderActions button:hover {
+          opacity: 1;
+          background: var(--picker-option-background-selected, rgba(var(--ion-color-primary-rgb), 0.09));
+        }
+      }
       .pickerHeaderActions button:focus-visible {
         opacity: 1;
         background: var(--picker-option-background-selected, rgba(var(--ion-color-primary-rgb), 0.09));

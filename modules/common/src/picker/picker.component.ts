@@ -226,8 +226,10 @@ export type PickerAppearance = 'field' | 'chip';
         font-size: 1.05em;
         opacity: 0.55;
       }
-      .pickerChipClear:hover {
-        opacity: 1;
+      @media (hover: hover) {
+        .pickerChipClear:hover {
+          opacity: 1;
+        }
       }
     `
   ]

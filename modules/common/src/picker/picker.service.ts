@@ -125,7 +125,12 @@ export class IDEAPickerService {
             event: params.event,
             showBackdrop: true
           })
-        : await this._modal.create({ component: IDEAPickerListComponent, componentProps, cssClass });
+        : await this._modal.create({
+            component: IDEAPickerListComponent,
+            componentProps,
+            cssClass,
+            ...(presentation === 'sheet' ? { breakpoints: [0, 1], initialBreakpoint: 1, handle: false } : {})
+          });
 
     await overlay.present();
     const { data } = await overlay.onDidDismiss();
