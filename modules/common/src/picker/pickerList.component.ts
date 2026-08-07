@@ -399,8 +399,11 @@ interface Row {
         margin-top: 6px;
       }
       /* the last row of a group carries no divider: the next heading is already the separation, and
-         drawing both reads as a double border */
+         drawing both reads as a double border. The second selector is that same rule seen from outside
+         the list — the clear row and the custom-value one are siblings of .pickerList, not of the
+         headings nested inside it, so the first heading would otherwise land under their divider */
       ion-item.pickerOption:has(+ .pickerGroup),
+      ion-item.pickerOption:has(+ .pickerList > .pickerGroup:first-child),
       ion-item.pickerOption:last-child,
       .pickerReorderGroup ion-item:last-child {
         --inner-border-width: 0;
