@@ -59,6 +59,7 @@ interface Row {
       <div class="pickerHeader">
         @if (showTitleRow()) {
           <div class="pickerHeaderMain">
+            <span class="pickerHeaderTitle">{{ title }}</span>
             <button
               type="button"
               class="pickerHeaderBtn"
@@ -67,7 +68,6 @@ interface Row {
             >
               <ion-icon icon="chevron-down" aria-hidden="true" />
             </button>
-            <span class="pickerHeaderTitle">{{ title }}</span>
           </div>
           @if (withSearch) {
             <div class="pickerHeaderSearch">
@@ -81,6 +81,12 @@ interface Row {
           }
         } @else {
           <div class="pickerHeaderMain">
+            <ion-searchbar
+              #searchbar
+              [debounce]="100"
+              [placeholder]="searchPlaceholder || ('IDEA_COMMON.PICKER.SEARCH' | translate)"
+              (ionInput)="search($event.target.value)"
+            />
             <button
               type="button"
               class="pickerHeaderBtn"
@@ -89,12 +95,6 @@ interface Row {
             >
               <ion-icon icon="chevron-down" aria-hidden="true" />
             </button>
-            <ion-searchbar
-              #searchbar
-              [debounce]="100"
-              [placeholder]="searchPlaceholder || ('IDEA_COMMON.PICKER.SEARCH' | translate)"
-              (ionInput)="search($event.target.value)"
-            />
           </div>
         }
         @if (multiple) {
@@ -229,7 +229,7 @@ interface Row {
          The surface is resolved once into a private name: reading --background inside the value of
          --background would be a circular reference, which CSS throws away. */
       :host {
-        --pickerSurface: var(--picker-background, var(--ion-item-background, var(--ion-background-color, #fff)));
+        --pickerSurface: var(--picker-surface, var(--ion-item-background, var(--ion-background-color, #fff)));
       }
       /* a plain header, not an ion-toolbar: a toolbar picks up the app's (usually dark) toolbar theme,
          which on a small anchored popover reads as a different component altogether */
@@ -240,8 +240,13 @@ interface Row {
         border-radius: var(--picker-header-radius, 0);
         background: var(--picker-header-background, var(--pickerSurface));
         color: var(--picker-header-color, inherit);
+        /* the rule follows the options' by default, since an untinted header is one surface with them; a
+           tinted one separates itself and usually wants it gone, which the option colour can't express */
         border-bottom: 1px solid
-          var(--picker-option-border-color, var(--ion-border-color, var(--ion-color-step-150, #e0e0e0)));
+          var(
+            --picker-header-border-color,
+            var(--picker-option-border-color, var(--ion-border-color, var(--ion-color-step-150, #e0e0e0)))
+          );
       }
       .pickerHeaderMain {
         display: flex;
@@ -338,9 +343,11 @@ interface Row {
         min-height: 38px;
         padding: 0;
       }
-      /* in a popover the searchbar shares the row with the close button, so it keeps its own gap */
+      /* in a popover the searchbar shares the row with the close button, which sits after it. The wider
+         gap on that side is deliberate: with text in the field, the searchbar's own clear button lands
+         right next to the close one, and two different actions shouldn't touch */
       .pickerHeaderMain ion-searchbar {
-        margin: 2px 4px 2px 0;
+        margin: 2px 6px 2px 4px;
       }
       .pickerGroup {
         position: sticky;

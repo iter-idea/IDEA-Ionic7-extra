@@ -201,21 +201,21 @@ export type PickerAppearance = 'field' | 'chip';
         gap: 6px;
         min-height: 34px;
         padding: 0 12px;
-        border: 1px solid var(--picker-border-color, var(--ion-border-color, var(--ion-color-step-150, #e0e0e0)));
-        border-radius: var(--picker-border-radius, 999px);
-        background: var(--picker-background, transparent);
+        border: 1px solid var(--picker-chip-border-color, var(--ion-border-color, var(--ion-color-step-150, #e0e0e0)));
+        border-radius: var(--picker-chip-border-radius, 999px);
+        background: var(--picker-chip-background, transparent);
         font-size: 0.85em;
       }
       button.pickerChip.active {
-        border-color: var(--picker-color-selected, var(--ion-color-primary));
-        background: var(--picker-background-selected, transparent);
+        border-color: var(--picker-chip-color-selected, var(--ion-color-primary));
+        background: var(--picker-chip-background-selected, transparent);
       }
       .pickerChipLabel {
         opacity: 0.6;
         font-weight: 500;
       }
       button.pickerChip.active .pickerChipLabel {
-        color: var(--picker-color-selected, var(--ion-color-primary));
+        color: var(--picker-chip-color-selected, var(--ion-color-primary));
         opacity: 0.85;
       }
       .pickerChipValue {
