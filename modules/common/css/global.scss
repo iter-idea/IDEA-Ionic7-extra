@@ -77,6 +77,17 @@ ion-modal.forceBackdrop {
   padding-bottom: 30px;
 }
 
+ion-action-sheet {
+  .action-sheet-button.action-sheet-destructive,
+  .action-sheet-button.action-sheet-destructive .action-sheet-icon {
+    color: var(--ion-color-danger) !important;
+  }
+  .action-sheet-button.action-sheet-cancel,
+  .action-sheet-button.action-sheet-cancel .action-sheet-icon {
+    color: var(--ion-color-medium-shade) !important;
+  }
+}
+
 ion-popover.actionSheetPopover {
   --width: 400px;
   ion-content {
