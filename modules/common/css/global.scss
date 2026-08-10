@@ -195,6 +195,7 @@ ion-popover.ideaPickerPopover {
 }
 ion-modal.ideaPickerModal {
   --width: clamp(320px, 46vw, 620px);
+  --min-width: 0;
   --max-width: calc(100vw - 32px);
   --height: min(600px, 80vh);
   --border-radius: 10px;
@@ -203,6 +204,14 @@ ion-modal.ideaPickerModal {
     --picker-header-radius: 10px 10px 0 0;
   }
 }
+// Ionic strips backdrop and shadow from a modal stacked on another; a picker is not a card in that stack.
+.modal-default.show-modal ~ ion-modal.ideaPickerModal {
+  backdrop-filter: brightness(70%);
+}
+.modal-default.show-modal ~ ion-modal.ideaPickerModal::part(content) {
+  box-shadow: 0 28px 48px rgba(0, 0, 0, 0.4);
+}
+
 // on a phone the list takes the screen: there's nothing to gain from a window inside a window
 ion-modal.ideaPickerSheet {
   --width: 100%;

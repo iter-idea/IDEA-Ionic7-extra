@@ -360,12 +360,15 @@ interface Row {
       ion-content {
         --background: var(--pickerSurface);
       }
+      /* only the host: Ionic renders the inner input itself, so it carries no scoping attribute of this
+         component and cannot be reached from here. An app that needs the field shorter than its own line
+         box sets the height on the searchbar-input class from its global stylesheet */
       ion-searchbar {
         --box-shadow: var(--picker-search-box-shadow, none);
         --border-radius: var(--picker-search-border-radius, 8px);
         flex: 1;
         min-width: 0;
-        min-height: 38px;
+        min-height: var(--picker-search-min-height, 38px);
         padding: 0;
       }
       /* in a popover the searchbar shares the row with the close button, which sits after it. The wider

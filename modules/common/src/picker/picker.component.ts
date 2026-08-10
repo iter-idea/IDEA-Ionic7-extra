@@ -28,6 +28,9 @@ export type PickerAppearance = 'field' | 'chip';
   imports: [IonIcon],
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
+    // a class and not the "appearance" attribute alone: an app binding [appearance] would never reflect it,
+    // and the chip's own layout has to hold either way
+    '[class.chipAppearance]': "appearance() === 'chip'",
     // resolved once from the app's mode; they are only the fallbacks of the public properties, so that an app
     // setting `--picker-icon-color` still wins over them
     '[style.--pickerIconSizeByMode]': 'iconSizeByMode',
@@ -94,6 +97,14 @@ export type PickerAppearance = 'field' | 'chip';
            leaves most of the field dead to the pointer */
         align-self: stretch;
       }
+      /* a chip is not a field: it is a token in a flowing row of filters, so it takes the width of what it
+         says. Without this it keeps the field's full-width block and a filter bar stacks one per line */
+      :host(.chipAppearance) {
+        display: inline-flex;
+        width: auto;
+        max-width: 100%;
+        align-self: center;
+      }
       /* dropped into a named slot of an ion-item it is not the row, it is what sits at one end of it —
          so it takes the width of its content, the way Ionic's own controls do there */
       :host([slot='start']),
@@ -120,6 +131,11 @@ export type PickerAppearance = 'field' | 'chip';
         border: 0;
         background: none;
         font: inherit;
+        /* the browser gives form controls a letter-spacing of their own, and the font shorthand above does
+           not cover it: in an app that tracks its type, the picker would be the one control set wider than
+           everything around it */
+        letter-spacing: inherit;
+        word-spacing: inherit;
         color: var(--picker-color, var(--ion-text-color));
         text-align: start;
         cursor: pointer;
@@ -198,38 +214,47 @@ export type PickerAppearance = 'field' | 'chip';
 
       button.pickerChip {
         width: auto;
-        gap: 6px;
+        gap: var(--picker-chip-gap, 6px);
         min-height: 34px;
         padding: 0 12px;
         border: 1px solid var(--picker-chip-border-color, var(--ion-border-color, var(--ion-color-step-150, #e0e0e0)));
         border-radius: var(--picker-chip-border-radius, 999px);
         background: var(--picker-chip-background, transparent);
-        font-size: 0.85em;
+        /* relative by default, so a chip dropped in a toolbar shrinks with it; absolute where a design
+           system wants every chip in a filter bar to be one size whatever it sits in */
+        font-size: var(--picker-chip-font-size, 0.85em);
       }
+      /* the outline of a filter chip says "this is a filter", not "this one is on": by default it keeps
+         the same colour in both states, and the accent lands on the label. An app that wants the border
+         to answer too sets the selected colour on it explicitly */
       button.pickerChip.active {
-        border-color: var(--picker-chip-color-selected, var(--ion-color-primary));
+        border-color: var(
+          --picker-chip-border-color-selected,
+          var(--picker-chip-border-color, var(--ion-border-color, var(--ion-color-step-150, #e0e0e0)))
+        );
         background: var(--picker-chip-background-selected, transparent);
       }
       .pickerChipLabel {
-        opacity: 0.6;
+        color: var(--picker-chip-label-color, currentColor);
+        opacity: var(--picker-chip-label-opacity, 0.6);
         font-weight: 500;
       }
+      /* the accent is the whole point of the active label, so it isn't muted on top of it */
       button.pickerChip.active .pickerChipLabel {
         color: var(--picker-chip-color-selected, var(--ion-color-primary));
-        opacity: 0.85;
+        opacity: 1;
       }
       .pickerChipValue {
         font-weight: 600;
       }
+      /* it only ever appears on a chip that has something to clear, so it wears that chip's own accent
+         rather than a muted grey: the icon is a filled disc, and the colour is what tells it apart from
+         a dead pixel next to the value */
       .pickerChipClear {
         flex: none;
-        font-size: 1.05em;
-        opacity: 0.55;
-      }
-      @media (hover: hover) {
-        .pickerChipClear:hover {
-          opacity: 1;
-        }
+        margin-inline-start: var(--picker-chip-clear-margin-start, 0px);
+        font-size: var(--picker-chip-clear-size, 1.05em);
+        color: var(--picker-chip-clear-color, var(--picker-chip-color-selected, var(--ion-color-primary)));
       }
     `
   ]
