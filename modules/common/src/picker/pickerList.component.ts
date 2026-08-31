@@ -162,7 +162,7 @@ interface Row {
         </ion-reorder-group>
       }
       <div class="pickerList" role="listbox" [attr.aria-multiselectable]="multiple">
-        @for (row of rows(); track $index) {
+        @for (row of rows(); track trackRow(row)) {
           @if (row.group) {
             <div class="pickerGroup" role="group" [attr.aria-label]="row.group">{{ row.group }}</div>
           } @else {
@@ -691,6 +691,9 @@ export class IDEAPickerListComponent implements OnInit {
     return Array.isArray(this.value) ? this.value : [this.value];
   }
 
+  trackRow(row: Row): string {
+    return row.option ? 'option:'.concat(String(row.option.value)) : 'group:'.concat(row.group);
+  }
   rowId(index: number): string {
     return this.instanceId.concat('-option-', String(index));
   }
